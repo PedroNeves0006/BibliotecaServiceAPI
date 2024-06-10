@@ -1,6 +1,6 @@
 ﻿namespace BibliotecaServiceAPI.Models
 {
-    public class LivroModel
+    public interface LivroModel
     {
         public int Id { get; set; }
         public string Titulo { get; set; }

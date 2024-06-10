@@ -1,6 +1,8 @@
-﻿namespace BibliotecaServiceAPI.Repositorios.Interfaces
+﻿using BibliotecaServiceAPI.Models;
+
+namespace BibliotecaServiceAPI.Repositorios.Interfaces
 {
-    public class IEmprestimoRepositorio
+    public interface IEmprestimoRepositorio
     {
         Task<List<EmprestimoModel>> BuscarTodosEmprestimos();
         Task<EmprestimoModel> BuscarPorId(int id);
