@@ -1,44 +1,57 @@
 ﻿using BibliotecaServiceAPI.Data;
 using BibliotecaServiceAPI.Models;
 using BibliotecaServiceAPI.Repositorios.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BibliotecaServiceAPI.Repositorios
 {
     public class EmprestimoRepositorio : IEmprestimoRepositorio
     {
-        private readonly BibliotecaAPIDBContext _dbContext;
+        private readonly BibliotecaServiceAPIDBContext _dbContext;
 
-        public EmprestimoRepositorio(BibliotecaAPIDBContext bibliotecaAPIDBContext)
+        public EmprestimoRepositorio(BibliotecaServiceAPIDBContext dbContext)
         {
-            _dbContext = bibliotecaAPIDBContext;
+            _dbContext = dbContext;
         }
+
         public async Task<List<EmprestimoModel>> BuscarTodosEmprestimos()
         {
-            return await _dbContext.Emprestimo
+            return await _dbContext.Emprestimos
                 .Include(x => x.Livro)
                 .ToListAsync();
         }
 
         public async Task<EmprestimoModel> BuscarPorId(int id)
         {
-            return await _dbContext.Emprestimo
+            return await _dbContext.Emprestimos
                 .Include(x => x.Livro)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<EmprestimoModel> Adicionar(EmprestimoModel emprestimo, EmprestimoModel status)
+        public async Task<EmprestimoModel> Adicionar(EmprestimoModel emprestimo)
         {
-            if (emprestimo.Status == Enum.StatusLivro.Disponivel)
+            
+            var livro = await _dbContext.Livros.FindAsync(emprestimo.LivroId);
+
+            if (livro == null)
             {
-                _dbContext.Emprestimo.Add(emprestimo);
-                _dbContext.SaveChanges();
+                throw new Exception("Livro não encontrado");
+            }
+
+            var status = livro.Status;
+
+            if (status != Enums.StatusLivro.Disponivel)
+            {
+                throw new Exception($"Livro indisponível para empréstimo");
             }
             else
             {
-                throw new Exception($"Livro indisponível para empréstimo");
+                _dbContext.Emprestimos.Add(emprestimo);
+                await _dbContext.SaveChangesAsync();
             }
 
             return emprestimo;
         }
+
 
         public async Task<EmprestimoModel> Atualizar(EmprestimoModel emprestimo, int id)
         {
@@ -52,7 +65,7 @@ namespace BibliotecaServiceAPI.Repositorios
             emprestimoPorId.DataEmprestimo = emprestimo.DataEmprestimo;
             emprestimoPorId.DataDevolucao = emprestimo.DataDevolucao;
 
-            _dbContext.Emprestimo.Update(emprestimoPorId);
+            _dbContext.Emprestimos.Update(emprestimoPorId);
             _dbContext.SaveChanges();
             return emprestimoPorId;
         }
@@ -65,7 +78,7 @@ namespace BibliotecaServiceAPI.Repositorios
                 throw new Exception($"Emprestimo para o Id: {id} não foi encontrado no banco de dados");
             }
 
-            _dbContext.Emprestimo.Remove(emprestimoPorId);
+            _dbContext.Emprestimos.Remove(emprestimoPorId);
             _dbContext.SaveChanges();
             return true;
         }
@@ -92,7 +105,7 @@ namespace BibliotecaServiceAPI.Repositorios
             }
 
             emprestimo.Devolvido = true;
-            _dbContext.Emprestimo.Update(emprestimo);
+            _dbContext.Emprestimos.Update(emprestimo);
             await _dbContext.SaveChangesAsync();
 
             return emprestimo;

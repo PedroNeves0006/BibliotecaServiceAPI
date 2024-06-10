@@ -32,10 +32,9 @@ namespace BibliotecaServiceAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<EmprestimoModel>> Cadastrar(EmprestimoModel emprestimoModel, [FromQuery] EmprestimoModel status)
+        public async Task<ActionResult<EmprestimoModel>> Cadastrar([FromBody]EmprestimoModel emprestimoModel)
         {
-
-            EmprestimoModel emprestimo = await _emprestimoRepositorio.Adicionar(emprestimoModel, status);
+            EmprestimoModel emprestimo = await _emprestimoRepositorio.Adicionar(emprestimoModel);
             return Ok(emprestimo);
         }
 

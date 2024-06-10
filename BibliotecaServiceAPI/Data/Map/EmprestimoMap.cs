@@ -12,8 +12,8 @@ namespace BibliotecaServiceAPI.Data.Map
             builder.HasKey(x => x.Id);
             builder.Property(x => x.DataEmprestimo).IsRequired().HasMaxLength(255);
             builder.Property(x => x.DataDevolucao).IsRequired().HasMaxLength(150);
-            builder.Property(x => x.Status).IsRequired();
             builder.Property(x => x.LivroId);
+            builder.Property(x => x.StatusLivro);
             builder.HasOne(x => x.Livro);
         }
     }
