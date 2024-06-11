@@ -3,6 +3,10 @@ using BibliotecaServiceAPI.Repositorios.Interfaces;
 using BibliotecaServiceAPI.Repositorios;
 using Microsoft.EntityFrameworkCore;
 using BibliotecaServiceAPI.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace BibliotecaServiceAPI
 {
@@ -10,6 +14,7 @@ namespace BibliotecaServiceAPI
     {
         public static void Main(string[] args)
         {
+            string ChaveSecreta = "53cd79e3-8114-4dcd-9e82-502924d7ef0c";
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<BibliotecaServiceAPIDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase") ?? throw new InvalidOperationException("Connection string 'DB_BibliotecaServiceAPI' not found.")));
@@ -18,11 +23,54 @@ namespace BibliotecaServiceAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BibliotecaService - API", Version = "v1" });
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Autentificação",
+                    Description = "Entre com o JWT Bearer token",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securitySchema);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+     {
+         { securitySchema, new string [] {} }
+     });
+            });
+
 
             builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
             builder.Services.AddScoped<ILivroRepositorio, LivroRepositorio>();
             builder.Services.AddScoped<IEmprestimoRepositorio, EmprestimoRepositorio>();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {                 
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "sua_empresa",
+                    ValidAudience = "sua_aplicacao",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ChaveSecreta))
+                };
+            });
+
 
             var app = builder.Build();
 
@@ -35,6 +83,7 @@ namespace BibliotecaServiceAPI
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

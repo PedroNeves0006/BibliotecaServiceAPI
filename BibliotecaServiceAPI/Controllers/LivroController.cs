@@ -1,10 +1,12 @@
 ﻿using BibliotecaServiceAPI.Models;
 using BibliotecaServiceAPI.Repositorios.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BibliotecaServiceAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LivroController : ControllerBase
