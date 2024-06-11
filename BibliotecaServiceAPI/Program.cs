@@ -14,7 +14,7 @@ namespace BibliotecaServiceAPI
     {
         public static void Main(string[] args)
         {
-            string ChaveSecreta = "53cd79e3-8114-4dcd-9e82-502924d7ef0c";
+            string chaveSecreta = "C9AFA24F-D65F-49E5-8583-3BEDADF1A416";
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<BibliotecaServiceAPIDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase") ?? throw new InvalidOperationException("Connection string 'DB_BibliotecaServiceAPI' not found.")));
@@ -67,7 +67,7 @@ namespace BibliotecaServiceAPI
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "sua_empresa",
                     ValidAudience = "sua_aplicacao",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ChaveSecreta))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(chaveSecreta))
                 };
             });
 
