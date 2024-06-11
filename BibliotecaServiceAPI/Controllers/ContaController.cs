@@ -24,7 +24,7 @@ namespace BibliotecaServiceAPI.Controllers
 
         private string GerarTokenJWT()
         {
-            string chaveSecreta = "75bd23b9-4183-4d5a-9201-ebfe38a8577d";
+            string chaveSecreta = "53cd79e3-8114-4dcd-9e82-502924d7ef0c";
             var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(chaveSecreta));
             // Header
             var credencial = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
