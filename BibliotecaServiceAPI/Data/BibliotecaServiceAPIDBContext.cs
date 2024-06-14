@@ -23,5 +23,5 @@ namespace BibliotecaServiceAPI.Data
             modelBuilder.ApplyConfiguration(new EmprestimoMap());
             base.OnModelCreating(modelBuilder);
         }
-    } 
+    }
 }

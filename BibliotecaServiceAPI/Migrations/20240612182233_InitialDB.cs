@@ -12,23 +12,6 @@ namespace BibliotecaServiceAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Livros",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Titulo = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Autor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Isbn = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    Ano = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Livros", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Usuarios",
                 columns: table => new
                 {
@@ -43,6 +26,30 @@ namespace BibliotecaServiceAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Livros",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Titulo = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Autor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Isbn = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Ano = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    UsurioId = table.Column<int>(type: "int", nullable: true),
+                    UsuarioId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Livros", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Livros_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Emprestimos",
                 columns: table => new
                 {
@@ -51,8 +58,8 @@ namespace BibliotecaServiceAPI.Migrations
                     DataEmprestimo = table.Column<DateTime>(type: "datetime2", maxLength: 255, nullable: false),
                     DataDevolucao = table.Column<DateTime>(type: "datetime2", maxLength: 150, nullable: false),
                     LivroId = table.Column<int>(type: "int", nullable: false),
-                    Devolvido = table.Column<bool>(type: "bit", nullable: false),
-                    StatusLivro = table.Column<int>(type: "int", nullable: false)
+                    StatusLivro = table.Column<int>(type: "int", nullable: false),
+                    Devolvido = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,6 +76,11 @@ namespace BibliotecaServiceAPI.Migrations
                 name: "IX_Emprestimos_LivroId",
                 table: "Emprestimos",
                 column: "LivroId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Livros_UsuarioId",
+                table: "Livros",
+                column: "UsuarioId");
         }
 
         /// <inheritdoc />
@@ -78,10 +90,10 @@ namespace BibliotecaServiceAPI.Migrations
                 name: "Emprestimos");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
+                name: "Livros");
 
             migrationBuilder.DropTable(
-                name: "Livros");
+                name: "Usuarios");
         }
     }
 }

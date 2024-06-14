@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BibliotecaServiceAPI.Migrations
 {
     [DbContext(typeof(BibliotecaServiceAPIDBContext))]
-    [Migration("20240610211448_VinculoEmprestimoUsuario")]
-    partial class VinculoEmprestimoUsuario
+    [Migration("20240612182326_VinculoEmprestimoLivro")]
+    partial class VinculoEmprestimoLivro
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -85,7 +85,15 @@ namespace BibliotecaServiceAPI.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsurioId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Livros");
                 });
@@ -122,6 +130,15 @@ namespace BibliotecaServiceAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Livro");
+                });
+
+            modelBuilder.Entity("BibliotecaServiceAPI.Models.LivroModel", b =>
+                {
+                    b.HasOne("BibliotecaServiceAPI.Models.UsuarioModel", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
                 });
 #pragma warning restore 612, 618
         }

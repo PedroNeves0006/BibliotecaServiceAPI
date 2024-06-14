@@ -15,6 +15,9 @@ namespace BibliotecaServiceAPI.Data.Map
             builder.Property(x => x.Isbn).HasMaxLength(20);
             builder.Property(x => x.Ano);
             builder.Property(x => x.Status).IsRequired();
+            builder.Property(x => x.UsurioId);
+            builder.HasOne(x => x.Usuario);
+
         }
     }
 }

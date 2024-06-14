@@ -1,4 +1,6 @@
-﻿namespace BibliotecaServiceAPI.Models
+﻿using BibliotecaServiceAPI.Enums;
+
+namespace BibliotecaServiceAPI.Models
 {
     public class UsuarioModel
     {

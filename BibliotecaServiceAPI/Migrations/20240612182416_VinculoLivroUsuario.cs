@@ -5,7 +5,7 @@
 namespace BibliotecaServiceAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class VinculoEmprestimoUsuario : Migration
+    public partial class VinculoLivroUsuario : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

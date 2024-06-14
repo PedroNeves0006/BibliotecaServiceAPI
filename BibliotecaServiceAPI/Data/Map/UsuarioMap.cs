@@ -12,6 +12,7 @@ namespace BibliotecaServiceAPI.Data.Map
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Nome).IsRequired().HasMaxLength(200);
             builder.Property(x => x.Email).IsRequired().HasMaxLength(150);
+            
         }
     }
 }

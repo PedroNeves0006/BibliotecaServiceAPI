@@ -82,7 +82,15 @@ namespace BibliotecaServiceAPI.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsurioId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Livros");
                 });
@@ -119,6 +127,15 @@ namespace BibliotecaServiceAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Livro");
+                });
+
+            modelBuilder.Entity("BibliotecaServiceAPI.Models.LivroModel", b =>
+                {
+                    b.HasOne("BibliotecaServiceAPI.Models.UsuarioModel", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
                 });
 #pragma warning restore 612, 618
         }
